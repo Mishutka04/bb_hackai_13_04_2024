@@ -1,18 +1,33 @@
 {% extends 'classificationDocument/base.html' %}
 {% block content %}
 <div class="head">Bitcoin Bandits</div>
-<div class="description">Загрузите свой файл и узнайте полное описание </div>
+<div class="description">Вас рад приветствовать <b>Gemini Patriot от Bitcoin Bandits</b><br/>Я очень мощный помощник, в моей основе лежат <b>нейросети имеющие 72.3B параметров.</b>
+<br/>
+Я способен определять класс документа, а так же выводить ключевую информации, прочитав Ваш документ.
+<br/>
+Просто загрузите файл и получите результат.
+<br/>
+<b>Поддерживаемые форматы:  docx  doc  pdf  rtf </b>
+</div>
 <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
-
+    <div class="form_data">
     {% for f in form %}
     <p>{{ f }}</p>
     <div class="form-error">{{ f.errors }}</div>
     {% endfor %}
+        </div>
     <div class="buttons">
-        <button class="button-arounder" type="submit">Загрузить</button>
+        <button id="upload-btn" class="button-arounder" type="submit">Загрузить</button>
+        <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            document.getElementById("upload-btn").addEventListener("click", function() {
+                alert("Анализируем файл, скоро вернемся с ответом.");
+            });
+        });
+        </script>
 </div>
 </form>
-
+<div class="telegram">У нас ивеется еще свой бот в <a href="https://t.me/Gemini_Patriot_bot">Telegram!</a> Опробуй его скорей!</div>
 
 {% endblock %}

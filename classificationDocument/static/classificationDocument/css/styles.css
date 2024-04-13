@@ -35,31 +35,56 @@ button{
 .info{
 margin-left: 50px;
 }
-.head, .description{
+.head, .description, .telegram{
 color: #ffffff;
 font-size: 45px;
-padding-top: 10px;
+padding-top: 50px;
+text-align: center;
+padding-bottom: 50px;
+
+}
+a{
+    color: #ffffff;
 }
 .file_name, .answer, .class_name{
-margin-top: 10px;
+margin-top: 30px;
 color: #ffffff;
 font-size: 25px;
+
 }
-
-
-button, .form_input {
+form{
+    display: flex;
+    flex-direction: column;
+    width: 100svh;
+}
+button {
   background: white;
   border: solid 2px black;
   padding: .375em 1.125em;
   font-size: 1rem;
-}
-.buttons, .form_input{
-    display: flex;
-    flex-direction: column;
 
 }
-.button-arounder,.form_input {
+button{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    align-items: center;
+
+}
+.form_input{
+    font-size: 25px;
+    background: #262626;
+    align-items: center;
+    display: block;
+    margin-right: auto;
+
+    margin-left: auto;
+}
+
+.button-arounder,.form_data {
   font-size: 2rem;
+  border: solid 2px black;
+  text-align:center;
   background: #262626;
   color: hsl(190deg, 10%, 95%);
 
@@ -85,7 +110,7 @@ button, .form_input {
 }
 
 .button-arounder:hover,
-.button-arounder:focus {
+.button-arounder:focus,  {
   box-shadow: 0 4px 8px hsla(190deg, 15%, 5%, .2);
   transform: translateY(-4px);
   background: hsl(230deg, 50%, 45%);
