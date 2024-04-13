@@ -1,0 +1,25 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+gradio-client = "*"
+aiogram = "*"
+flake8 = "*"
+textract = "*"
+docx2txt = "*"
+python-docx = "*"
+translators = "*"
+pyngrok = "*"
+ollama = "*"
+pypdf = "*"
+twine = "*"
+striprtf = "*"
+django = "*"
+gunicorn = "*"
+
+[dev-packages]
+
+[requires]
+python_version = "3.11"
