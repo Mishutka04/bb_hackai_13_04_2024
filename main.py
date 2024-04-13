@@ -10,6 +10,7 @@ from aiogram.types import FSInputFile, URLInputFile, BufferedInputFile
 from gradio_client import Client
 import requests
 import utils as ut
+import sync_utils as ut_s
 import os
 import re
 import aiohttp
@@ -88,7 +89,18 @@ async def download_photo(message: types.Message, bot: Bot):
         text=answer,
         parse_mode=ParseMode.HTML
         )
+def no_async_predict(input_message):
     
+    client = Client("https://qwen-qwen1-5-72b-chat.hf.space/--replicas/3kh1x/")
+    result = client.predict(
+        input_message,
+        [["None", "None"]],
+        "None",
+        api_name="/model_chat"
+    )
+    
+    return result[1][1][1]
+
 
 async def async_predict(input_message):
     
@@ -115,7 +127,7 @@ async def async_predict(input_message):
 @dp.message(Command("start"))
 async def start_command(message: types.Message):
     await message.answer(
-        text="Вас рад приветствовать <b>Gemini Patriot</b>\nЯ очень мощный, в моей основе лежат <b>нееросети имеющие 72.3B параметров.</b>\nЯ способен определять класс документа, а так же выводить ключевую информации, прочитав Ваш документ.\nПросто загрузите файл и получете результат.\n<b>Поддерживаемые форматы:\n docx\n doc\n pdf\n rtf\n all_images_formats</b>\n справка: <b>/help</b>", parse_mode=ParseMode.HTML)
+        text="Вас рад приветствовать <b>Gemini Patriot</b>\nЯ очень мощный, в моей основе лежат <b>нейросети имеющие 72.3B параметров.</b>\nЯ способен определять класс документа, а так же выводить ключевую информации, прочитав Ваш документ.\nПросто загрузите файл и получите результат.\n<b>Поддерживаемые форматы:\n docx\n doc\n pdf\n rtf\n all_images_formats</b>\n справка: <b>/help</b>", parse_mode=ParseMode.HTML)
     
 
 @dp.message(Command("help"))
@@ -130,6 +142,8 @@ async def cmd_start_help(message: types.Message):
 Пример: <b>{{ прикрепите документ, я всё сделаю за вас }}</b>\n\n \
 <b>/image</b> - для обработки изображений\n \
 Пример: <b>{{ прикрепите изображение }}</b> пометка <b>/image</b>\n\n \
+<b>/zip</b> - интелектуальный поиск по архиву\n \
+Пример: <b>{{ прикрепите ZIP архив }}</b> пометка <b>/zip {{ Альфа-Банк }}</b>\n\n \
 <b>/chat</b> - для общения с языковой моделью\n \
 Пример: <b>/chat Привет! Давай дружить!</b>\n\n " ,
 parse_mode=ParseMode.HTML
@@ -151,6 +165,101 @@ async def any_message(message: types.Message):
         text=answer,
         parse_mode=ParseMode.HTML
         )
+
+@dp.message(Command("zip"))
+async def download_doc(message: types.Message):
+    query = message.caption.split("/zip")[-1]
+    print(query)
+    try:
+        file_id = message.document.file_id  # Get file id
+        file_zip_type = message.document.file_name.split(".")[-1]
+        file = await bot.get_file(file_id)  # Get file path
+        current_directory = os.getcwd()  # Get current working directory
+        if file_zip_type == "zip":
+            valid_docs = []
+            await message.answer(
+"Архив обрабатывается, пожалуйста подождите.\n \
+Обработка АРХИВА может занимать больше времени,\n \
+чем обработка отдельного документа",
+                )
+            zip_file_name = os.path.join(current_directory, "files", f"{message.document.file_name}")
+            await bot.download_file(file.file_path, zip_file_name)
+            docs = ut.extract_zip(zip_file_name)
+            
+
+            for item in docs[:10]:
+                file_type = item.split(".")[-1]
+                # current_directory = os.getcwd()  # Get current working directory
+                if file_type == "doc" or file_type == "docx"  or file_type == "pdf" or file_type == "rtf":
+                    # file_name = os.path.join(current_directory, "files", f"{message.document.file_name}")
+                    # await bot.download_file(file.file_path, file_name)
+                    file_name = item.split("/")[-1]
+                    if  file_name.endswith(".docx"):
+                        text = await ut.read_docx(item)
+                    elif file_name.endswith(".doc"):
+                        text = await ut.read_doc(item)
+                    elif file_name.endswith(".pdf"):
+                        text = await ut.read_pdf(item)
+                    elif file_name.endswith(".rtf"):
+                        text = await ut.read_rtf(item)
+                    question=f"классиифицируй тип документа {text}, выведи общее название, найди {query} в документе сделай пометку True если нашёл"
+                    answer = no_async_predict(question)
+                    index = str(answer).find("True")  # Находим индекс первого вхождения "True" в тексте
+                    if index != -1:
+                        print(f"Строка 'True' найдена в тексте на позиции {index}.")
+                        # Ваш словарь ключ-значение
+                        dictionary = {
+                            "доверенность": "proxy",
+                            "договор": "contract",
+                            "передаточный акт": "act",
+                            "акт": "act",
+                            "заявление": "application",
+                            "приказ": "order",
+                            "расчет": "invoice",
+                            "накладная": "invoice",
+                            "форма": "invoice",
+                            "счет": "bill",
+                            "приложение": "bill",
+                            "счет-оферта": "bill",
+                            "фактура": "bill",
+                            "(фактура)": "bill",
+                            "faktura": "bill",
+                            "соглашение": "arrangement",
+                            "договор оферты": "contract offer",
+                            "оферта": "contract offer",
+                            "устав": "statute",
+                            "решение": "determination"
+                        }
+
+                        # Ваша строка
+                        your_string = answer.lower()
+
+                        # Разделить строку на слова по пробелам и итерировать
+                        for word in your_string.split():
+                            # Проверить, есть ли слово в качестве ключа в словаре
+                            if word in dictionary:
+                                # Если да, вернуть значение для этого ключа
+                                found_value = dictionary[word]
+                                break
+                        
+                        found_value = found_value if "found_value" in locals() else None
+                        valid_docs.append((str(file_name)) + "  " + f"Тип документа: {found_value}")
+                    else:
+                        print("Строка 'True' не найдена в тексте.")
+                else:
+                    continue
+            print(valid_docs)
+            answer = f"<b>Документы удовлетворящие параметрам запроса {query}: </b> {'|__|'.join(valid_docs)}"
+            await message.answer(
+                text=answer,
+                parse_mode=ParseMode.HTML
+                )
+        # else:
+        #     await message.answer(
+        #         text="Убедитесь, что файл имеет расширение .doc, .docx, .rtf или .pdf")
+    except AttributeError:
+        await message.answer(
+                text="Убедитесь, что файл имеет расширение .zip")
 
 
 # @dp.message(Command("doc"))
@@ -229,11 +338,6 @@ async def download_doc(message: types.Message):
     # await message.answer(
     #             text="Убедитесь, что файл имеет расширение .doc или .docx")
 
-# @dp.message(Command("answer"))
-# async def echo_message(message: types.Message):
-#     answer = await async_predict(message.text)
-#     print(answer)
-#     await message.answer(text=answer)
 
 
 async def main():
