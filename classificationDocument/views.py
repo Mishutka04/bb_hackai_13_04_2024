@@ -30,7 +30,7 @@ def doc(doc):
         "None",  # str  in 'parameter_9' Textbox component
         api_name="/model_chat"
     )
-    print(result[1][1][1])
+    #print(result[1][1][1])
 
     # Ваш словарь ключ-значение
     dictionary = {
@@ -67,8 +67,9 @@ def doc(doc):
             break
 
     # Печать найденного значения (если совпадение найдено) или None (если совпадение не найдено)
-    print(found_value if "found_value" in locals() else None)
-    return (found_value if "found_value" in locals() else None)
+    #print(result[1][1][1], found_value if "found_value" in locals() else None)
+    #return re.sub(r'[^a-zA-Z0-9а-яА-Я\s]', ' ', result[1][1][1]) + (found_value if "found_value" in locals() else None)
+    return (re.sub(r'[^a-zA-Z0-9а-яА-Я\s]', ' ', result[1][1][1]) , found_value if "found_value" in locals() else None)
 
 
 def clean_text(text):
@@ -152,7 +153,7 @@ def handle_uploaded_file(f):
         for chunk in f.chunks():
             destination.write(chunk)
 
-            print(type(destination))
+            #print(type(destination))
             # read_text(destination, ext)
         return read_text(f"uploads/{name}_{suffix}{ext}", ext)
 
@@ -166,12 +167,13 @@ class FileFieldFormView(FormView):
         files = form.cleaned_data["file_field"]
         messages.success(self.request, 'The post has been created successfully.')
         file_name = ''
+        class_name = ""
         answer = ""
         for f in files:
             text = handle_uploaded_file(f)
-            answer = doc(text)
+            answer, class_name = doc(text)
             file_name = f.name
             # print(text)
-            ...  # Подключение модулей для обработки
+        print(class_name)
         return render(self.request, 'classificationDocument/info_file.html',
-                      context={'file': file_name, 'answer': answer})
+                      context={'file': file_name, 'answer': answer, 'class': class_name})
