@@ -1,6 +1,17 @@
 {% extends 'classificationDocument/base.html' %}
+{% load static %}
 {% block content %}
-{{file}}
-{{answer}}
-{{class_name}}
+<div class="head">Bitcoin Bandits</div>
+<div class="description">Результат </div>
+<div class="files_info">
+    <div class="images">
+        <img src="{% static 'classificationDocument/images/text.png' %}" />
+    </div>
+    <div class="info">
+        <div class="file_name">Название файла: {{file}}</div>
+        <div class="answer">Описание: {{answer}}</div>
+        <div class="class_name">Класс: {{class_name}}</div>
+    </div>
+</div>
+
 {% endblock %}

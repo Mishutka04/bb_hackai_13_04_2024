@@ -20,4 +20,4 @@ class MultipleFileField(forms.FileField):
 
 
 class FileFieldForm(forms.Form):
-    file_field = MultipleFileField()
+    file_field = MultipleFileField(widget=forms.FileInput(attrs={"class": "form_input"}))
