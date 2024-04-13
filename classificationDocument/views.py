@@ -2,6 +2,7 @@ import os
 import uuid
 
 from django.contrib import messages
+from django.shortcuts import render
 from django.views.generic.edit import FormView
 from .forms import FileFieldForm
 
@@ -164,10 +165,13 @@ class FileFieldFormView(FormView):
     def form_valid(self, form):
         files = form.cleaned_data["file_field"]
         messages.success(self.request, 'The post has been created successfully.')
+        file_name = ''
+        answer = ""
         for f in files:
             text = handle_uploaded_file(f)
             answer = doc(text)
-            print(answer)
-            #print(text)
+            file_name = f.name
+            # print(text)
             ...  # Подключение модулей для обработки
-        return super().form_valid(form)
+        return render(self.request, 'classificationDocument/info_file.html',
+                      context={'file': file_name, 'answer': answer})
