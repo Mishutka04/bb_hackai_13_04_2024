@@ -1,0 +1,22 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <link type="text/css" href="{% static 'classificationDocument/css/styles.css' %}" rel="stylesheet" />
+    <meta charset="UTF-8">
+    {% block title %}<title>Загрузка файлов</title>{% endblock %}
+  <style>
+
+.content{
+background-image: url('{% static 'classificationDocument/images/background.png' %}');
+}
+</style>
+</head>
+<div class="content">
+    {% block content %} {% endblock %}
+</div>
+<body >
+
+</body>
+</html>
