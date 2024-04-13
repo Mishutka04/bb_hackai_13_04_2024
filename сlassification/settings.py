@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-ba#h_llkk*v2_6p6$+208(i^wrweqfi!fv5zi^96o_6z4j-xpj
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1', 'perfectum.firecalculation.ru']
+ALLOWED_HOSTS = ['127.0.0.1', 'perfectum.firecalculation.ru', 'gemini-patriot.firecalculation.ru']
 
 
 # Application definition
