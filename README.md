@@ -16,11 +16,11 @@
 `Под капотом` у web-сервиса находится модель `Gemini Patriot` - собственная модель, дообучена на основе - `qwen-qwen1-5-72b`.
 
 ### Структура 
-- `/classificationDocument` - приложение Django с  моделью  `Gemini Patriot`
-- `/static, /uploads, /сlassification` - системные директории
+- `/classificationDocument` - приложение Django с  моделью  `Gemini Patriot`.
+- `/static, /uploads, /сlassification` - системные директории.
 - `BERT.ipynb` - дообученная модель BERT.
-- `Pipfile` - документ со всеми зависимостями проекта
-- `main.py` - Telegram Bot
+- `Pipfile` - документ со всеми зависимостями проекта.
+- `main.py` - Telegram Bot.
 
 ## Особенности
 
